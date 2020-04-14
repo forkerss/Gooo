@@ -6,3 +6,10 @@
 # Usage
 go run zipGitRepo.go https://github.com/Buzz2d0/Gooo.git
 ```
+
+- [clean] 简单的递归清理目录和文件
+
+```bash
+# Usage
+python3 clean.py ../Gooo
+```
