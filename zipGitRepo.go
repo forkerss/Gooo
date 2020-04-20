@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -10,41 +11,54 @@ import (
 )
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var repoURL string
 
 func main() {
-	repos := os.Args[1:]
-	for _, repoaddr := range repos {
-		cloneAndZip(repoaddr)
+	initCmd()
+	flag.Parse()
+	cloneAndZip()
+}
+
+func initCmd() {
+	flag.StringVar(&repoURL, "repo", "none", "Git 仓库地址")
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, `zipGitRepo version: 0.0.1
+Usage: zipGitRepo [-h] [-repo]
+
+Options:
+`)
+		flag.PrintDefaults()
 	}
 }
 
-func cloneAndZip(repoaddr string) {
-	if !strings.HasSuffix(repoaddr, ".git") {
-		fmt.Println("This is not a repository.")
+func cloneAndZip() {
+	if !strings.HasSuffix(repoURL, ".git") {
+		fmt.Println("[!] 不是一个仓库地址")
 		return
 	}
-	dirs := strings.Split(repoaddr, "/")
-	dirName := dirs[len(dirs)-1]
-	dirName = strings.Replace(dirName, ".git", "", 1)
-	// clear old `dirName`.zip
-	if fileExists(fmt.Sprintf("./%s.zip", dirName)) {
-		os.RemoveAll(fmt.Sprintf("./%s.zip", dirName))
+
+	dirs := strings.Split(repoURL, "/")
+	repoDirName := dirs[len(dirs)-1]
+	repoDirName = strings.Replace(repoDirName, ".git", "", 1)
+
+	// clear old `repoDirName`.zip
+	if fileExists(fmt.Sprintf("./%s.zip", repoDirName)) {
+		os.RemoveAll(fmt.Sprintf("./%s.zip", repoDirName))
 	}
 
 	// git clone repository
-	gitCloneCmd := fmt.Sprintf("git clone %s", repoaddr)
-	cmd := exec.Command("/bin/sh", "-c", gitCloneCmd)
+	cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("git clone %s", repoURL))
 	_, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("git clone error: %s\n", err)
 		return
 	}
 	// defer clear repository
-	defer os.RemoveAll(fmt.Sprintf("./%s", dirName))
+	defer os.RemoveAll(fmt.Sprintf("./%s", repoDirName))
 
 	// zip 压缩加密文件
-	simplePasswd := randStringRunes(12)
-	zipCmd := fmt.Sprintf("zip -r  -P %s %s.zip %s", simplePasswd, dirName, dirName)
+	passwd := randStringRunes(12)
+	zipCmd := fmt.Sprintf("zip -r  -P %s %s.zip %s", passwd, repoDirName, repoDirName)
 	cmd = exec.Command("/bin/sh", "-c", zipCmd)
 	_, err = cmd.CombinedOutput()
 	if err != nil {
@@ -52,7 +66,7 @@ func cloneAndZip(repoaddr string) {
 		return
 	}
 	// Succ
-	fmt.Printf("Succ - file: '%s.zip' passwd: %s\n", dirName, simplePasswd)
+	fmt.Printf("Succ - file: '%s.zip' passwd: %s\n", repoDirName, passwd)
 }
 
 func fileExists(path string) bool {
