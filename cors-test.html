@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cors Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="url" placeholder="input url" /><button
+      id="test"
+      onclick="testCors()"
+    >
+      Test
+    </button>
+  </body>
+  <script>
+    (function () {
+      var old = console.log;
+    })();
+    function testCors() {
+      let url = document.getElementById("url").value;
+      testForaxios(url, console.log);
+      testForXMLHttpRequest(url, console.log);
+    }
+    function testForaxios(url, callback) {
+      axios
+        .get(url)
+        .then((res) => {
+          callback("axios ", res);
+        })
+        .catch((error) => {
+          callback(error.response);
+        });
+    }
+
+    function testForXMLHttpRequest(url, callback) {
+      let xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          callback("XMLHttpRequest", xhr.response);
+        }
+      };
+      xhr.open("GET", url, true);
+      xhr.send(null);
+    }
+  </script>
+</html>
