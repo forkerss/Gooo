@@ -13,12 +13,6 @@ import (
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 var repoURL string
 
-func main() {
-	initCmd()
-	flag.Parse()
-	cloneAndZip()
-}
-
 func initCmd() {
 	flag.StringVar(&repoURL, "repo", "none", "Git 仓库地址")
 	flag.Usage = func() {
@@ -29,6 +23,12 @@ Options:
 `)
 		flag.PrintDefaults()
 	}
+}
+
+func main() {
+	initCmd()
+	flag.Parse()
+	cloneAndZip()
 }
 
 func cloneAndZip() {
