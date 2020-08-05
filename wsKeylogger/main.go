@@ -35,7 +35,6 @@ func cleanCurrentConn(address string) {
 	fbw, ok := keyFileBufSet[address]
 	if ok {
 		fbw.keyBuf.Flush()
-		fbw.storeFile.Close()
 	}
 
 }
