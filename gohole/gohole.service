@@ -1,0 +1,12 @@
+[Unit]
+Description=gohole service
+Wants=network-online.target
+After=network.target emqx.service
+
+[Service]
+# Type=forking
+ExecStart=/opt/gohole/bin/gohole
+ExecStop=/bin/kill -SIGINT $MAINPID
+
+[Install]
+WantedBy=multi-user.target
