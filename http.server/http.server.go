@@ -30,6 +30,7 @@ func init() {
 	flag.StringVar(&host, "host", "0.0.0.0", "http.server listen host default: \"0.0.0.0\"")
 	flag.IntVar(&port, "port", 8080, "http.server listen port default: 8080")
 	dir = getCurrPath()
+	flag.Parse()
 }
 
 func getStatusCode(w http.ResponseWriter) int64 {
