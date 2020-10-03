@@ -5,11 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"os/exec"
-	"path/filepath"
 	"reflect"
-	"strings"
 )
 
 var (
@@ -18,18 +14,9 @@ var (
 	dir  string
 )
 
-func getCurrPath() string {
-	file, _ := exec.LookPath(os.Args[0])
-	path, _ := filepath.Abs(file)
-	index := strings.LastIndex(path, string(os.PathSeparator))
-	ret := path[:index]
-	return ret
-}
-
 func init() {
 	flag.StringVar(&host, "host", "0.0.0.0", "http.server listen host default: \"0.0.0.0\"")
 	flag.IntVar(&port, "port", 8080, "http.server listen port default: 8080")
-	dir = getCurrPath()
 	flag.Parse()
 }
 
@@ -52,5 +39,5 @@ func withLog(h http.Handler) http.HandlerFunc {
 func main() {
 	addr := fmt.Sprintf("%s:%d", host, port)
 	log.Printf("listen on http://%s\n", addr)
-	log.Fatal(http.ListenAndServe(addr, withLog(http.FileServer(http.Dir(dir)))))
+	log.Fatal(http.ListenAndServe(addr, withLog(http.FileServer(http.Dir("./")))))
 }
